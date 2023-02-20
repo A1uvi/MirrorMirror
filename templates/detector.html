@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block content %}
+
+<body>
+
+  <div class="opening">
+   <h1 class="welcome">Affirmation Camera</h1>
+   <h4>Click the listening button and read out loud the quote shown, then click next</h4>
+  <div class="button-container">
+   <button type="button" onclick="init()" class="startbutton" id="start">START</button></div>
+  <div class="webcam-container">
+    <div class="posture" id="posture">
+      <img src="" class="posturepic" id="posturepic"></div>
+    <canvas id="canvas"></canvas>
+    <p id="quote"> </p>
+  </div>
+  
+  <main>
+      <div id="result"></div>
+      <div class="buttons">
+      <button id="button" class="startbutton">Start listening</button>
+      <p id="message" hidden aria-hidden="true">
+        Your browser doesn't support Speech Recognition. Sorry.
+      </p>
+      <button id="checker" class="startbutton">Next</button>
+      </div>
+  </main>
+ <div id="label-container"></div>
+ 
+</body>
+
+
+<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyCdYVxcjx-Po661OZKl_Gx9zw1cbum1kQw",
+    authDomain: "self-esteem-a4542.firebaseapp.com",
+    projectId: "self-esteem-a4542",
+    storageBucket: "self-esteem-a4542.appspot.com",
+    messagingSenderId: "1038692427589",
+    appId: "1:1038692427589:web:96229929c51e03592b002c",
+    measurementId: "G-98GKSDGYEV"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
+
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+  <script>
+    var config = {apiKey: "AIzaSyCdYVxcjx-Po661OZKl_Gx9zw1cbum1kQw",
+    authDomain: "self-esteem-a4542.firebaseapp.com",
+    projectId: "self-esteem-a4542",
+    storageBucket: "self-esteem-a4542.appspot.com",
+    messagingSenderId: "1038692427589",
+    appId: "1:1038692427589:web:96229929c51e03592b002c",
+    measurementId: "G-98GKSDGYEV"
+  };
+    firebase.initializeApp(config);
+  </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+<script type="text/javascript">
+    
+    const URL = "https://teachablemachine.withgoogle.com/models/hZpnR1hwj/";
+    let model, webcam, ctx, labelContainer, maxPredictions;
+
+    async function init() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        model = await tmPose.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        const size = 300;
+        const flip = true;
+        webcam = new tmPose.Webcam(size, size, flip);
+        await webcam.setup();
+        await webcam.play();
+        window.requestAnimationFrame(loop);
+
+        const canvas = document.getElementById("canvas");
+        canvas.width = size; canvas.height = size;
+        ctx = canvas.getContext("2d");
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) {
+            labelContainer.appendChild(document.createElement("div"));
+        }
+        showQuote();
+    }
+
+    async function loop(timestamp) {
+        webcam.update();
+        await predict();
+        window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+        const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+        const prediction = await model.predict(posenetOutput);
+
+        for (let i = 0; i < maxPredictions; i++) {
+            const classPrediction =
+                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            labelContainer.childNodes[i].innerHTML = classPrediction;
+            if (prediction[1].probability.toFixed(2) > 0.90) {
+              document.getElementById("posturepic").src = "static/img/badposture.png";
+              
+            }
+            if (prediction[0].probability.toFixed(2) > 0.80) {
+              document.getElementById("posturepic").src = "static/img/goodposture.png";
+            }
+        }
+
+        drawPose(pose);
+    }
+
+    function drawPose(pose) {
+        if (webcam.canvas) {
+            ctx.drawImage(webcam.canvas, 0, 0);
+            if (pose) {
+            }
+        }
+    }
+
+    var arrayQuote = "";
+    function showQuote() {
+      var quote = ["I am capable", "I am strong", "I am inspirational", "I can do it", "I am unstoppable", "My dreams will become reality", "Nothing can stop me", "Everything is possible", "I can reach it", "I am powerful","I can make a real difference","My hard work will pay off", "I am strong", "I got this", "I believe in myself."]
+      arrayQuote = quote[Math.floor(Math.random() * quote.length)]; 
+      document.getElementById("quote").innerHTML = arrayQuote;
+      return(arrayQuote.toLowerCase())
+    }
+  
+      window.addEventListener("DOMContentLoaded", () => {
+        const button = document.getElementById("button");
+        const result = document.getElementById("result");
+        const main = document.getElementsByTagName("main")[0];
+        let listening = false;
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (typeof SpeechRecognition !== "undefined") {
+          const recognition = new SpeechRecognition();
+
+          const stop = () => {
+            main.classList.remove("speaking");
+            recognition.stop();
+            button.textContent = "Start listening";
+          };
+
+          const start = () => {
+            main.classList.add("speaking");
+            recognition.start();
+            button.textContent = "Stop listening";
+          };
+
+          const onResult = event => {
+            result.innerHTML = "";
+            for (const res of event.results) {
+              const text = document.createTextNode(res[0].transcript);
+              const p = document.createElement("p");
+              p.id = 'speechResult'
+              if (res.isFinal) {
+                p.classList.add("final");
+              }
+              p.appendChild(text);
+              result.appendChild(p);
+
+            }
+          };
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.addEventListener("result", onResult);
+          button.addEventListener("click", event => {
+            listening ? stop() : start();
+            listening = !listening;
+          });
+        } else {
+          button.remove();
+          const message = document.getElementById("message");
+          message.removeAttribute("hidden");
+          message.setAttribute("aria-hidden", "false");
+        }
+      });
+
+    document.getElementById("checker").addEventListener("click", checkCorrect);
+
+    function checkCorrect(){
+      document.getElementById("quote").innerHTML = "Good job!";
+        setTimeout(showQuote, 2000);
+        document.getElementById("result").innerHTML = ""
+    }
+
+
+
+  var database = firebase.database();
+
+function readUserData(){
+var userId = firebase.auth().currentUser.uid;
+ return firebase.database().ref('/users/' + userId).once('newScore').then((snapshot) => {
+ var score =  (snapshot.val() && snapshot.val().score) 
+ writeUserData(score);
+});
+}
+
+</script>
+{% endblock %}

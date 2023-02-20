@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="intro-logo">
+    <div class="Info1">
+      <div class="iteminfo1">
+        <img src="static\img\text_sent.png"alt="">
+      <h2>Sent!</h2>
+      <p id="what">You will be directed to the home page in 3 seconds. </p>
+      <script>
+        var timer = setTimeout(function() {
+            window.location="{{ url_for('index')}}"
+        }, 3000);
+    </script>
+    </div> 
+    </div>
+    </div>
+  </div>
+
+  <body>
+    <script src="static\js\script.js"></script>
+ <script    src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
+
+ <script>
+   var firebaseConfig = {
+     apiKey: "AIzaSyCdYVxcjx-Po661OZKl_Gx9zw1cbum1kQw",
+     authDomain: "self-esteem-a4542.firebaseapp.com",
+     projectId: "self-esteem-a4542",
+     storageBucket: "self-esteem-a4542.appspot.com",
+     messagingSenderId: "1038692427589",
+     appId: "1:1038692427589:web:fec40c86d70396992b002c",
+     measurementId: "G-MPH6Q69KHJ"
+  };
+   firebase.initializeApp(firebaseConfig);
+   firebase.analytics();
+ </script>
+  </body>
+</html>
+{% endblock %}

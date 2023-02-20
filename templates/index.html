@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="intro-logo">
+    <div class="Info1">
+      <img src="static\img\logo.png"alt="">
+      <div class="iteminfo1">
+      <h1>What is Mirror Mirror?</h1>
+      <p id="what">
+        Confidence is a very important part of empowerment and growth, but unfortunately sometime its hard to channel it. We created this website to enforce a positive mindset and improve confidence through affirmations and resources.
+        Confidence is a very important part of empowerment and growth, but unfortunately sometime its hard to channel it. We created this website to enforce a positive mindset and improve confidence through affirmations and resources.
+      </p>
+      <div class="startbutton" id="start" style="background-color: aliceblue;">
+        <a href="{{url_for('detector')}}">Start Now</a>
+      </div>
+    </div> 
+      </div>
+    </div>
+  </div>
+
+  <div class="intro-logo" style="background-image:none;">
+    <div class="Info2">
+      <h1>Daily Quote</h1>
+      <br>
+      <p id="what" style="padding-left: 30px;"><b> The Quote is:<br>
+        {{ quote }}</b>
+      </p>
+    </div> 
+  </div>
+  
+  <div class="opening">
+    <p><br></p>
+    <h2 class="welcome">Text Me The Quote: </h2>
+    <form action="{{ url_for('sent') }}" method="post">
+    <label for="firstname"><b>Name:</b></label>
+    <input type="text" id="firstname" name="fname" placeholder="firstname">
+    <label for="number"><br><br><b> Phone Number:</b></label>
+    <input type="text" id="number" name="number" placeholder="+1xxxxxxxxxx">
+    <br> <br>
+    <button type="submit" class="startbutton">Text Me</button>
+    </div>
+    <p><br><br></p>
+    </div>
+  
+  <body>
+    <script src="static\js\script.js"></script>
+ <script    src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
+
+ <script>
+   var firebaseConfig = {
+     apiKey: "AIzaSyCdYVxcjx-Po661OZKl_Gx9zw1cbum1kQw",
+     authDomain: "self-esteem-a4542.firebaseapp.com",
+     projectId: "self-esteem-a4542",
+     storageBucket: "self-esteem-a4542.appspot.com",
+     messagingSenderId: "1038692427589",
+     appId: "1:1038692427589:web:fec40c86d70396992b002c",
+     measurementId: "G-MPH6Q69KHJ"
+  };
+   firebase.initializeApp(firebaseConfig);
+   firebase.analytics();
+ </script>
+  </body>
+</html>
+{% endblock %}
