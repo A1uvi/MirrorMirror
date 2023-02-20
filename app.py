@@ -17,11 +17,11 @@ quoteList = ["You don’t have to control your thoughts. You just have to stop l
 quoteOfSession= random.choice(quoteList)
 
 def sendMessages(number, name, quote):
-    account_sid = 'ACf29c32ce0f97954ba6d94164f0e4de04'
-    auth_token = 'ae96e1e6c5a36cc3dadf5226b90ba7dc'
+    account_sid = 'x'
+    auth_token = 'x'
     client = Client(account_sid, auth_token)
     client.messages.create(
-        body= "Hello " + name + ", \n\nMirror Mirror in my hand, who is the fairest in the land? You are, " + name + "! \n\nThe quote of the day is: \n\n" + quote + " \n\nHave a lovely day, and thank you for using Mirror Mirror!",
+        body= "Hey Friend, \n\nMirror Mirror in my hand, who is the fairest in the land? You are! You have been linked to a wellness chain. Please send this message to at least 3 other people to encourage self love in your community today. \n\nThe quote of the day is: \n\n" + quote + " \n\nInterested in more self-esteem boosting content? Check out MirrorMirror!",
         from_='+18882071473',
         to=number
         )
